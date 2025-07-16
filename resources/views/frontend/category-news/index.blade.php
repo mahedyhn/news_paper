@@ -9,10 +9,8 @@
 
 <!-- Featured News Slider Start -->
 <div class="container-fluid  mb-3">
-
     <div class="container">
         @foreach ($news as $news)
-
         <div class="p-5 text-center">
         <div class="card">
             <div class="row ">
@@ -29,10 +27,8 @@
             </div>
           </div>
         </div>
-            @endforeach
-        </div>
-
-    </div>
-
+      </div>
+ @endforeach
+</div>
 
 @endsection
