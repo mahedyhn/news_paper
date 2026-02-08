@@ -64,8 +64,6 @@ class NewsController extends Controller
         }
         $news->delete();
         return redirect(route('manage'))->with('msg','News Deleted Successfully');
-
     }
-
 
 }

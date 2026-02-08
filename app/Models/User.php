@@ -27,6 +27,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'google_id',
+        'facebook_id',
+        'github_id',
+        'oauth_provider',
+        'email_verified_at',
     ];
 
     /**
@@ -58,4 +63,9 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    public function newspapers()
+    {
+        return $this->hasMany(Newspaper::class);
+    }
 }

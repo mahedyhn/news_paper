@@ -32,13 +32,33 @@
             <div class="col-lg-9">
                 <nav class="navbar navbar-expand-sm bg-dark p-0">
                     <ul class="navbar-nav ml-n2">
-                        <li class="nav-item">
-                            <a class="nav-link text-body small" href="{{route('login')}}">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-body small" href="{{route('register')}}">Register</a>
-                        </li>
-
+                        @auth
+                            <li class="nav-item">
+                                <a class="nav-link text-body small" href="{{route('dashboard')}}">
+                                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+                                    @csrf
+                                    <button type="submit" class="nav-link text-body small"
+                                        style="border: none; background: none; cursor: pointer;">
+                                        <i class="fas fa-sign-out-alt"></i> Logout
+                                    </button>
+                                </form>
+                            </li>
+                        @else
+                            <li class="nav-item">
+                                <a class="nav-link text-body small" href="{{route('login')}}">
+                                    <i class="fas fa-sign-in-alt"></i> Login
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-body small" href="{{route('register')}}">
+                                    <i class="fas fa-user-plus"></i> Register
+                                </a>
+                            </li>
+                        @endauth
                     </ul>
                 </nav>
             </div>
@@ -70,7 +90,8 @@
         <div class="row align-items-center bg-white py-3 px-lg-5">
             <div class="col-lg-4">
                 <a href="{{route('home')}}" class="navbar-brand p-0 d-none d-lg-block">
-                    <h1 class="m-0 display-4 text-uppercase text-primary">JDSM<span class="text-secondary font-weight-normal">News</span></h1>
+                    <h1 class="m-0 display-4 text-uppercase text-primary">JDSM<span
+                            class="text-secondary font-weight-normal">News</span></h1>
                 </a>
             </div>
 
@@ -83,7 +104,8 @@
     <div class="container-fluid p-0">
         <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-2 py-lg-0 px-lg-5">
             <a href="{{route('home')}}" class="navbar-brand d-block d-lg-none">
-                <h1 class="m-0 display-4 text-uppercase text-primary">Jdsm<span class="text-white font-weight-normal">News</span></h1>
+                <h1 class="m-0 display-4 text-uppercase text-primary">Jdsm<span
+                        class="text-white font-weight-normal">News</span></h1>
             </a>
             <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
                 <span class="navbar-toggler-icon"></span>
@@ -91,9 +113,11 @@
             <div class="collapse navbar-collapse justify-content-between px-0 px-lg-3" id="navbarCollapse">
                 <div class="navbar-nav mr-auto py-0">
                     <a href="{{route('home')}}" class="nav-item nav-link active">Home</a>
-                    @foreach ($categories as $category)
-                    <a class="nav-item nav-link active" href="{{route('blogsByCategory',$category->id)}}">{{$category->name}}</a>
-                @endforeach
+                    @forelse ($categories ?? [] as $category)
+                        <a class="nav-item nav-link active"
+                            href="{{route('blogsByCategory', $category->id)}}">{{$category->name}}</a>
+                    @empty
+                    @endforelse
                 </div>
                 <div class="input-group ml-auto d-none d-lg-flex" style="width: 100%; max-width: 300px;">
                     <input type="text" class="form-control border-0" placeholder="Keyword">

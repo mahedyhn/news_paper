@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Testing Tool - News Paper App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .section {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            font-family: inherit;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .button-group button {
+            width: 100%;
+        }
+
+        .button-secondary {
+            background: #6c757d;
+        }
+
+        .button-secondary:hover {
+            background: #5a6268;
+        }
+
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .response.success {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .response.error {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .status.authenticated {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #28a745;
+        }
+
+        .status.unauthenticated {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #dc3545;
+        }
+
+        .token-display {
+            background: #e7f3ff;
+            border-left: 3px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: "...";
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+
+            0%,
+            20% {
+                content: ".";
+            }
+
+            40% {
+                content: "..";
+            }
+
+            60%,
+            100% {
+                content: "...";
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            color: #666;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>📰 News Paper API Testing</h1>
+            <p>Test all API endpoints with real-time responses</p>
+        </header>
+
+        <div class="content">
+            <!-- Authentication Section -->
+            <div class="section">
+                <h2>🔐 Authentication</h2>
+
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('register')">Register</button>
+                    <button class="tab-btn" onclick="switchTab('login')">Login</button>
+                    <button class="tab-btn" onclick="switchTab('logout')">Logout</button>
+                </div>
+
+                <div id="register" class="tab-content active">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="regName" placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="regEmail" placeholder="john@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="regPassword" placeholder="At least 8 characters">
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <input type="password" id="regPasswordConfirm" placeholder="Confirm password">
+                    </div>
+                    <button onclick="register()">Register</button>
+                </div>
+
+                <div id="login" class="tab-content">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="loginEmail" placeholder="john@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" placeholder="Your password">
+                    </div>
+                    <button onclick="login()">Login</button>
+                </div>
+
+                <div id="logout" class="tab-content">
+                    <p style="margin-bottom: 20px; color: #666;">Click the button below to logout and clear the API
+                        token.</p>
+                    <button onclick="logout()">Logout</button>
+                </div>
+
+                <div id="authStatus" class="status unauthenticated" style="margin-top: 15px;">
+                    ❌ Not Authenticated
+                </div>
+
+                <div id="tokenDisplay"></div>
+
+                <div id="authResponse" class="response" style="display: none;"></div>
+            </div>
+
+            <!-- News Section -->
+            <div class="section">
+                <h2>📝 News Management</h2>
+
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('getAllNews')">Get All</button>
+                    <button class="tab-btn" onclick="switchTab('getNews')">Get Single</button>
+                    <button class="tab-btn" onclick="switchTab('createNews')">Create</button>
+                </div>
+
+                <div id="getAllNews" class="tab-content active">
+                    <button onclick="getAllNews()">Fetch All News</button>
+                </div>
+
+                <div id="getNews" class="tab-content">
+                    <div class="form-group">
+                        <label>News ID</label>
+                        <input type="number" id="newsId" placeholder="Enter news ID">
+                    </div>
+                    <button onclick="getNews()">Get News Details</button>
+                </div>
+
+                <div id="createNews" class="tab-content">
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" id="newsTitle" placeholder="News title">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="newsDesc" placeholder="News description" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Category ID</label>
+                        <input type="number" id="newsCategoryId" placeholder="1">
+                    </div>
+                    <button onclick="createNews()">Create News</button>
+                </div>
+
+                <div id="newsResponse" class="response" style="display: none;"></div>
+            </div>
+
+            <!-- Categories Section -->
+            <div class="section">
+                <h2>📂 Categories</h2>
+
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('getAllCategories')">Get All</button>
+                    <button class="tab-btn" onclick="switchTab('createCategory')">Create</button>
+                </div>
+
+                <div id="getAllCategories" class="tab-content active">
+                    <button onclick="getAllCategories()">Fetch All Categories</button>
+                </div>
+
+                <div id="createCategory" class="tab-content">
+                    <div class="form-group">
+                        <label>Category Name</label>
+                        <input type="text" id="categoryName" placeholder="Technology">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="categoryDesc" placeholder="Category description" rows="3"></textarea>
+                    </div>
+                    <button onclick="createCategory()">Create Category</button>
+                </div>
+
+                <div id="categoryResponse" class="response" style="display: none;"></div>
+            </div>
+
+            <!-- Settings Section -->
+            <div class="section">
+                <h2>⚙️ API Settings</h2>
+
+                <div class="form-group">
+                    <label>API Base URL</label>
+                    <input type="text" id="apiUrl" value="http://localhost/news-paper/api"
+                        placeholder="http://localhost/api">
+                </div>
+
+                <div class="button-group">
+                    <button class="button-secondary" onclick="clearAll()">Clear All Data</button>
+                    <button class="button-secondary" onclick="testConnection()">Test Connection</button>
+                </div>
+
+                <div id="settingsResponse" class="response" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get API base URL
+        function getApiUrl() {
+            return document.getElementById('apiUrl').value;
+        }
+
+        // Get stored token
+        function getToken() {
+            return localStorage.getItem('api_token');
+        }
+
+        // Get stored user
+        function getUser() {
+            const user = localStorage.getItem('user');
+            return user ? JSON.parse(user) : null;
+        }
+
+        // Update auth status
+        function updateAuthStatus() {
+            const token = getToken();
+            const statusEl = document.getElementById('authStatus');
+            const tokenDisplay = document.getElementById('tokenDisplay');
+
+            if (token) {
+                statusEl.className = 'status authenticated';
+                statusEl.innerHTML = '✅ Authenticated';
+                tokenDisplay.innerHTML = `
+                    <div class="token-display">
+                        <strong>Token:</strong><br>
+                        ${token}
+                    </div>
+                `;
+            } else {
+                statusEl.className = 'status unauthenticated';
+                statusEl.innerHTML = '❌ Not Authenticated';
+                tokenDisplay.innerHTML = '';
+            }
+        }
+
+        // Switch tabs
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+            // Show current tab
+            const tabContent = document.getElementById(tabName);
+            if (tabContent) {
+                tabContent.classList.add('active');
+                event.target.classList.add('active');
+            }
+        }
+
+        // Make API request
+        async function apiRequest(method, endpoint, data = null) {
+            try {
+                const url = getApiUrl() + endpoint;
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+
+                const token = getToken();
+                if (token) {
+                    options.headers['Authorization'] = `Bearer ${token}`;
+                }
+
+                if (data) {
+                    options.body = JSON.stringify(data);
+                }
+
+                const response = await fetch(url, options);
+                const responseData = await response.json();
+
+                return {
+                    status: response.status,
+                    data: responseData
+                };
+            } catch (error) {
+                return {
+                    status: 0,
+                    error: error.message
+                };
+            }
+        }
+
+        // Register
+        async function register() {
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const password_confirmation = document.getElementById('regPasswordConfirm').value;
+
+            if (!name || !email || !password || !password_confirmation) {
+                showResponse('authResponse', 'Please fill all fields', 'error');
+                return;
+            }
+
+            showResponse('authResponse', 'Registering...', 'loading');
+
+            const result = await apiRequest('POST', '/auth/register', {
+                name, email, password, password_confirmation
+            });
+
+            if (result.data?.success) {
+                localStorage.setItem('api_token', result.data.data.token);
+                localStorage.setItem('user', JSON.stringify(result.data.data.user));
+                updateAuthStatus();
+                showResponse('authResponse', JSON.stringify(result.data, null, 2), 'success');
+                clearRegisterForm();
+            } else {
+                showResponse('authResponse', JSON.stringify(result.data || result, null, 2), 'error');
+            }
+        }
+
+        // Login
+        async function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                showResponse('authResponse', 'Please fill all fields', 'error');
+                return;
+            }
+
+            showResponse('authResponse', 'Logging in...', 'loading');
+
+            const result = await apiRequest('POST', '/auth/login', {
+                email, password
+            });
+
+            if (result.data?.success) {
+                localStorage.setItem('api_token', result.data.data.token);
+                localStorage.setItem('user', JSON.stringify(result.data.data.user));
+                updateAuthStatus();
+                showResponse('authResponse', JSON.stringify(result.data, null, 2), 'success');
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPassword').value = '';
+            } else {
+                showResponse('authResponse', JSON.stringify(result.data || result, null, 2), 'error');
+            }
+        }
+
+        // Logout
+        async function logout() {
+            showResponse('authResponse', 'Logging out...', 'loading');
+
+            const result = await apiRequest('POST', '/auth/logout');
+
+            localStorage.removeItem('api_token');
+            localStorage.removeItem('user');
+            updateAuthStatus();
+            showResponse('authResponse', 'Logged out successfully', 'success');
+        }
+
+        // Get all news
+        async function getAllNews() {
+            showResponse('newsResponse', 'Fetching news...', 'loading');
+            const result = await apiRequest('GET', '/news');
+            showResponse('newsResponse', JSON.stringify(result.data, null, 2), result.data?.success ? 'success' : 'error');
+        }
+
+        // Get single news
+        async function getNews() {
+            const id = document.getElementById('newsId').value;
+            if (!id) {
+                showResponse('newsResponse', 'Please enter a news ID', 'error');
+                return;
+            }
+
+            showResponse('newsResponse', 'Fetching news...', 'loading');
+            const result = await apiRequest('GET', `/news/${id}`);
+            showResponse('newsResponse', JSON.stringify(result.data, null, 2), result.data?.success ? 'success' : 'error');
+        }
+
+        // Create news
+        async function createNews() {
+            if (!getToken()) {
+                showResponse('newsResponse', 'Please login first', 'error');
+                return;
+            }
+
+            const title = document.getElementById('newsTitle').value;
+            const desc = document.getElementById('newsDesc').value;
+            const category_id = document.getElementById('newsCategoryId').value;
+
+            if (!title || !desc || !category_id) {
+                showResponse('newsResponse', 'Please fill all fields', 'error');
+                return;
+            }
+
+            showResponse('newsResponse', 'Creating news...', 'loading');
+            const result = await apiRequest('POST', '/news', {
+                title, desc, category_id
+            });
+
+            if (result.data?.success) {
+                showResponse('newsResponse', JSON.stringify(result.data, null, 2), 'success');
+                document.getElementById('newsTitle').value = '';
+                document.getElementById('newsDesc').value = '';
+                document.getElementById('newsCategoryId').value = '';
+            } else {
+                showResponse('newsResponse', JSON.stringify(result.data || result, null, 2), 'error');
+            }
+        }
+
+        // Get all categories
+        async function getAllCategories() {
+            showResponse('categoryResponse', 'Fetching categories...', 'loading');
+            const result = await apiRequest('GET', '/categories');
+            showResponse('categoryResponse', JSON.stringify(result.data, null, 2), result.data?.success ? 'success' : 'error');
+        }
+
+        // Create category
+        async function createCategory() {
+            if (!getToken()) {
+                showResponse('categoryResponse', 'Please login first', 'error');
+                return;
+            }
+
+            const name = document.getElementById('categoryName').value;
+            const desc = document.getElementById('categoryDesc').value;
+
+            if (!name || !desc) {
+                showResponse('categoryResponse', 'Please fill all fields', 'error');
+                return;
+            }
+
+            showResponse('categoryResponse', 'Creating category...', 'loading');
+            const result = await apiRequest('POST', '/categories', {
+                name, desc
+            });
+
+            if (result.data?.success) {
+                showResponse('categoryResponse', JSON.stringify(result.data, null, 2), 'success');
+                document.getElementById('categoryName').value = '';
+                document.getElementById('categoryDesc').value = '';
+            } else {
+                showResponse('categoryResponse', JSON.stringify(result.data || result, null, 2), 'error');
+            }
+        }
+
+        // Show response
+        function showResponse(elementId, message, type = 'success') {
+            const el = document.getElementById(elementId);
+            el.textContent = message;
+            el.className = `response ${type}`;
+            el.style.display = 'block';
+        }
+
+        // Clear all data
+        function clearAll() {
+            localStorage.removeItem('api_token');
+            localStorage.removeItem('user');
+            updateAuthStatus();
+            alert('All data cleared!');
+        }
+
+        // Test connection
+        async function testConnection() {
+            showResponse('settingsResponse', 'Testing connection...', 'loading');
+            const result = await apiRequest('GET', '/categories');
+
+            if (result.status === 200 || (result.data && result.data.success)) {
+                showResponse('settingsResponse', '✅ Connection successful!', 'success');
+            } else {
+                showResponse('settingsResponse', '❌ Connection failed: ' + (result.error || JSON.stringify(result.data)), 'error');
+            }
+        }
+
+        // Clear register form
+        function clearRegisterForm() {
+            document.getElementById('regName').value = '';
+            document.getElementById('regEmail').value = '';
+            document.getElementById('regPassword').value = '';
+            document.getElementById('regPasswordConfirm').value = '';
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', updateAuthStatus);
+    </script>
+</body>
+
+</html>
